@@ -129,17 +129,21 @@ I finally randomly shuffled the data set and put Y% of the data into a validatio
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
 
 version 1
-[![v1](http://img.youtube.com/vi/j5pJNoAC-38/0.jpg)](http://www.youtube.com/watch?v=j5pJNoAC-38)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=j5pJNoAC-38" target="_blank"><img src="http://img.youtube.com/vi/j5pJNoAC-38/0.jpg" alt="v1" width="240" height="160" border="10" /></a>
+
 
 version 2, correction 0.15, epoch 7
-[![v2_c0.15_7](http://img.youtube.com/vi/7eGYfVB5oB8/0.jpg)](http://www.youtube.com/watch?v=7eGYfVB5oB8)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=eGYfVB5oB8" target="_blank"><img src="http://img.youtube.com/vi/eGYfVB5oB8/0.jpg" alt="v2_c0.15_7" width="240" height="160" border="10" /></a>
+
 
 version 2, correction 0.20, epoch 7
-[![v2_c0.20_7](http://img.youtube.com/vi/Kd4DzaxKaPA/0.jpg)](http://www.youtube.com/watch?v=Kd4DzaxKaPA)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=Kd4DzaxKaPA" target="_blank"><img src="http://img.youtube.com/vi/Kd4DzaxKaPA/0.jpg" alt="v2_c0.20_7" width="240" height="160" border="10" /></a>
+
 
 version 2, correction 0.20, epoch 3
-[![v2_c0.20_3](http://img.youtube.com/vi/tY1NqwFFQC0/0.jpg)](http://www.youtube.com/watch?v=tY1NqwFFQC0)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=tY1NqwFFQC0" target="_blank"><img src="http://img.youtube.com/vi/tY1NqwFFQC0/0.jpg" alt="v2_c0.20_3" width="240" height="160" border="10" /></a>
+
 
 version 3, correction 0.15, epoch 7
-[![v3_c0.15_7](http://img.youtube.com/vi/in-UAMa_PQQ/0.jpg)](http://www.youtube.com/watch?v=in-UAMa_PQQ)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=in-UAMa_PQQ" target="_blank"><img src="http://img.youtube.com/vi/in-UAMa_PQQ/0.jpg" alt="v3_c0.15_7" width="240" height="160" border="10" /></a>
 
