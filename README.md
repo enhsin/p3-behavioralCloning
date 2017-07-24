@@ -128,4 +128,14 @@ I finally randomly shuffled the data set and put Y% of the data into a validatio
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
 
+version 1
 [![v1](http://img.youtube.com/vi/j5pJNoAC-38/0.jpg)](http://www.youtube.com/watch?v=j5pJNoAC-38)
+version 2, correction 0.15, epoch 7
+[![v2_c0.15_7](http://img.youtube.com/vi/7eGYfVB5oB8/0.jpg)](http://www.youtube.com/watch?v=7eGYfVB5oB8)
+version 2, correction 0.20, epoch 7
+[![v2_c0.20_7](http://img.youtube.com/vi/Kd4DzaxKaPA/0.jpg)](http://www.youtube.com/watch?v=Kd4DzaxKaPA)
+version 2, correction 0.20, epoch 3
+[![v2_c0.20_3](http://img.youtube.com/vi/tY1NqwFFQC0/0.jpg)](http://www.youtube.com/watch?v=tY1NqwFFQC0)
+version 3, correction 0.15, epoch 7
+[![v3_c0.15_7](http://img.youtube.com/vi/in-UAMa_PQQ /0.jpg)](http://www.youtube.com/watch?v=in-UAMa_PQQ)
+
