@@ -60,74 +60,45 @@ I first tried training the central camera data from the sample data. There are 8
   </tr>
 </table>
 
+Then I added data from the left and right camera, with left image having a larger turn and right one a smaller turn (see Section 12 of the course material). This adjustment to the nominal steering angle is a hyperparameter.
 
-####1. Solution Design Approach
+|![alt text](./images/left_2017_07_23_21_04_53_561.jpg "left")|![alt text](./images/right_2017_07_23_21_04_53_561.jpg "right")|
+|:---:|:---:|
+|left|right|
 
-The overall strategy for deriving a model architecture was to ...
+The total size of the training and validation set is now 8036x2x3 = 48k. The car can finish 1 lap successfully from a model with 0.2 rad (11 degree) correction. 
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+<table>
+  <tr>
+    <td><br>version 2<br><br>correction: 0.2<br>epoch: 4<br>training loss: 0.0190<br>validation loss: 0.0151</td> 
+  <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=tY1NqwFFQC0" target="_blank"><img src="http://img.youtube.com/vi/tY1NqwFFQC0/0.jpg" alt="v2_c0.20_3" width="240" height="160" border="10" /></a></td>
+</tr>
+</table>
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+Note that the loss function is larger now because I purposely let the car not staying in the middle of the lane by including left and right camera images. The driving also shows meandering behavior. Decreasing the correction angle seems to help (see below video). Unfortunately, this model hit the roadside barrier at the last big right turn. 
 
-To combat the overfitting, I modified the model so that ...
+<table>
+  <tr>
+    <td><br>version 2<br><br>correction: 0.15<br>epoch: 8<br>training loss: 0.0137<br>validation loss: 0.0127</td>    
+    <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=7eGYfVB5oB8" target="_blank"><img src="http://img.youtube.com/vi/7eGYfVB5oB8/0.jpg" alt="v2_c0.15_7" width="240" height="160" border="10" /></a></td>
+  </tr>
+</table>
 
-Then I ... 
+Finally, I collected two laps of Track 1 [data](http://web.ics.purdue.edu/~epeng/test2.tgz) just to make sure that data at sharp turns are properly recorded. This added 25% of the data. Because the data was collected with the keyboard, a larger error is expected.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-####2. Final Model Architecture
-
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
-
-####3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+<table>
+  <tr>
+    <td><br>version 3<br><br>correction: 0.15<br>epoch: 8<br>training loss: 0.0354<br>validation loss: 0.0282</td>    
+    <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=in-UAMa_PQQ" target="_blank"><img src="http://img.youtube.com/vi/in-UAMa_PQQ/0.jpg" alt="v3_c0.15_7" width="240" height="160" border="10" /></a></td>
+</tr>
+</table>
+It successfully drived abound Track 1!
 
 
 
 
-version 2, correction 0.15, epoch 7
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=7eGYfVB5oB8" target="_blank"><img src="http://img.youtube.com/vi/7eGYfVB5oB8/0.jpg" alt="v2_c0.15_7" width="240" height="160" border="10" /></a>
 
 
-version 2, correction 0.20, epoch 7
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=Kd4DzaxKaPA" target="_blank"><img src="http://img.youtube.com/vi/Kd4DzaxKaPA/0.jpg" alt="v2_c0.20_7" width="240" height="160" border="10" /></a>
 
 
-version 2, correction 0.20, epoch 3
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=tY1NqwFFQC0" target="_blank"><img src="http://img.youtube.com/vi/tY1NqwFFQC0/0.jpg" alt="v2_c0.20_3" width="240" height="160" border="10" /></a>
-
-
-version 3, correction 0.15, epoch 7
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=in-UAMa_PQQ" target="_blank"><img src="http://img.youtube.com/vi/in-UAMa_PQQ/0.jpg" alt="v3_c0.15_7" width="240" height="160" border="10" /></a>
 
