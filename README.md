@@ -1,20 +1,10 @@
-**Behavioral Cloning** 
-
-[//]: # (Image References)
-
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+# **Behavioral Cloning** 
 
 My project includes the following files:
-* model.py containing the script to create and train the model
-* drive.py for driving the car in autonomous mode (from the project's [repo](https://github.com/udacity/CarND-Behavioral-Cloning-P3))
-* model.h5 containing a trained convolution neural network 
-* README.md summarizing the results
+* model.py - the script to create and train the model
+* drive.py - for driving the car in autonomous mode (from the project's [repo](https://github.com/udacity/CarND-Behavioral-Cloning-P3))
+* model.h5 - Keras convolution neural network model
+* README.md - summarizing the results
 
 To drive the car autonomously, run 
 ```
@@ -28,35 +18,48 @@ python model.py
 ```
 after the [sample](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) training data and [additional](http://web.ics.purdue.edu/~epeng/test2.tgz) training data are unpacked. 
 
-####3. Submission code is usable and readable
+### Model Architecture and Training Strategy
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+I follow Paul Heraty's [advice](https://slack-files.com/T2HQV035L-F50B85JSX-7d8737aeeb) to use Nvidia’s CNN [model](https://arxiv.org/pdf/1604.07316v1.pdf), which consists of 5 convolutional layers (three 5x5 and two 3x3, depth 24, 36, 48, 64, 64) and 3 fully-connected layers (size 100, 50, 10).
 
-###Model Architecture and Training Strategy
+| Layer (type)                    | Output Shape         | Param #    | Connected to            |       
+|:-------------------------------:|:--------------------:|:----------:|:-----------------------:|
+| cropping2d_1 (Cropping2D)       | (None, 80, 320, 3)   | 0          | cropping2d_input_2[0][0]|
+| lambda_1 (Lambda)               | (None, 80, 320, 3)   | 0          | cropping2d_1[0][0]      |
+| convolution2d_1 (Convolution2D) | (None, 38, 158, 24)  | 1824       | lambda_1[0][0]          |
+| convolution2d_2 (Convolution2D) | (None, 17, 77, 36)   | 21636      | convolution2d_1[0][0]   |   
+| convolution2d_3 (Convolution2D) | (None, 7, 37, 48)    | 43248      | convolution2d_2[0][0]   |   
+| convolution2d_4 (Convolution2D) | (None, 3, 18, 64)    | 27712      | convolution2d_3[0][0]   |   
+| convolution2d_5 (Convolution2D) | (None, 1, 8, 64)     | 36928      | convolution2d_4[0][0]   |   
+| flatten_1 (Flatten)             | (None, 512)          | 0          | convolution2d_5[0][0]   |
+| dense_1 (Dense)                 | (None, 100)          | 51300      | flatten_1[0][0]         |   
+| dropout_1 (Dropout)             | (None, 100)          | 0          | dense_1[0][0]           |   
+| activation_1 (Activation)       | (None, 100)          | 0          | dropout_1[0][0]         |   
+| dense_2 (Dense)                 | (None, 50)           | 5050       | activation_1[0][0]      |   
+| dropout_2 (Dropout)             | (None, 50)           | 0          | dense_2[0][0]           |   
+| activation_2 (Activation)       | (None, 50)           | 0          | dropout_2[0][0]         |   
+| dense_3 (Dense)                 | (None, 10)           | 510        | activation_2[0][0]      |   
+| dropout_3 (Dropout)             | (None, 10)           | 0          | dense_3[0][0]           |   
+| activation_3 (Activation)       | (None, 10)           | 0          | dropout_3[0][0]         |   
+| dense_4 (Dense)                 | (None, 1)            | 11         | activation_3[0][0]      |   
 
-####1. An appropriate model architecture has been employed
+Total params: 188,219
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+Images are cropped and normalized (see Sections 9 and 13 of the course material) within the model. I did not add pooling after the convolution (like what we used to do in LeNet) because max pooling was quite time consuming.  I simply use 2x2 stride to reduce the number of parameters. Three dropout layers are added after the three connected layers to reduce overfitting. I started from one dropout layer, but it was not effective. After trying different values by hands, I’m set with dropout rate 0.5, 0.3, and 0.3. The loss function is the mean squared error of the steering angle, which penalizes outlier harshly, so that the car will stay on the track. The loss function is minimized by Adam optimizer. The model will train for a few epochs until the validation loss stops improving using _EarlyStopping_ callback function.
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+The training data is mainly from the provided Track 1 sample data. I later added two laps of keyboard controlled Track 1 data.  20% of the data are reserved for the validation. Center, left and right cameras are all used to teach the car to drive (details in the next section). 
 
-####2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+### Architecture and Training Documentation
+I first tried training the central camera data from the sample data. There are 8036 images. Flipping the images (driving clockwise) doubles the amount of the data. The car was able to drive smoothly initially, but it went to a dirt road and crashed.
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+<table>
+  <tr>
+    <td><br>version 1</br><br>training loss: 0.0100</br>validation loss: 0.0094</td>
+    <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=j5pJNoAC-38" target="_blank"><img src="http://img.youtube.com/vi/j5pJNoAC-38/0.jpg" alt="v1" width="240" height="160" border="10" /></a></td>
+  </tr>
+</table>
 
-####3. Model parameter tuning
-
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
-
-####4. Appropriate training data
-
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
-
-For details about how I created the training data, see the next section. 
-
-###Model Architecture and Training Strategy
 
 ####1. Solution Design Approach
 
@@ -110,8 +113,7 @@ I finally randomly shuffled the data set and put Y% of the data into a validatio
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
 
-version 1
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=j5pJNoAC-38" target="_blank"><img src="http://img.youtube.com/vi/j5pJNoAC-38/0.jpg" alt="v1" width="240" height="160" border="10" /></a>
+
 
 
 version 2, correction 0.15, epoch 7
