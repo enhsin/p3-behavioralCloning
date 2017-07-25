@@ -23,15 +23,15 @@ def splitData(seed, validation_split=0.2, folders=['data'], augment=False, corre
             next(data)  #skip first line
             for row in data:
                 if np.random.uniform() < validation_split:
-                    img_valid.append(folder+'/'+row[0])
-                    y_valid.append(float(row[3]))
+                    img_valid.append(folder+'/'+row[0])   #center image name
+                    y_valid.append(float(row[3]))         #steering angle
                 else:
                     img_train.append(folder+'/'+row[0])
                     y_train.append(float(row[3]))
                     if augment:
-                        img_train.append(folder+'/'+row[1].strip())
+                        img_train.append(folder+'/'+row[1].strip()) #left image
                         y_train.append(float(row[3])+correction)
-                        img_train.append(folder+'/'+row[2].strip())
+                        img_train.append(folder+'/'+row[2].strip()) #right image
                         y_train.append(float(row[3])-correction)
 
     return img_train, y_train, img_valid, y_valid
@@ -53,7 +53,7 @@ def generator(width, height, img, label, batch_size):
 def createModel(input_l1,input_l2):
     model = Sequential()
     model.add(Cropping2D(cropping=((55,25), (0,0)), input_shape=(input_l1, input_l2, 3)))
-    model.add(Lambda(lambda x: (x / 255.0) - 0.5))
+    model.add(Lambda(lambda x: (x / 255.0) - 0.5)) #normalize
     model.add(Convolution2D(24, 5, 5, subsample=(2,2), border_mode='valid', activation='relu'))
     model.add(Convolution2D(36, 5, 5, subsample=(2,2), border_mode='valid', activation='relu'))
     model.add(Convolution2D(48, 5, 5, subsample=(2,2), border_mode='valid', activation='relu'))
@@ -76,12 +76,17 @@ def createModel(input_l1,input_l2):
 correction = 0.15
 if len(sys.argv) > 1:
     correction = float(sys.argv[1])
+
+#read driving_log.csv and split data into training and validation set
 img_train, y_train, img_valid, y_valid = splitData(3, validation_split=0.4, augment=True, correction=correction, folders=['data','test2'])
+
+#get image dimension
 tmp_img = imread(img_train[0]).astype(np.float32)
 width = tmp_img.shape[1]
 height = tmp_img.shape[0]
 output = 'model_v4_c%.2f' % (correction)
 
+# create or resume a model
 if len(sys.argv) > 2:
     initialEpoch = int(float(sys.argv[2]))
     totalEpoch = 6 + initialEpoch
@@ -94,20 +99,18 @@ else:
     np.random.seed(123)
     model = createModel(height, width)
 
-
-np.random.seed(123)
-if os.path.exists(output+'.h5'):
-    model = load_model(output+'.h5')
-else:
-    model = createModel(height, width)
-
 # print model information
 model.summary()
 
+# callback funtions
 early_stop = EarlyStopping(monitor='val_loss', min_delta=0.0002, patience=3, verbose=0, mode='auto')
 check_callback = ModelCheckpoint(output+'_{epoch:03d}.h5', monitor='val_loss', save_best_only=True)
+
+# python generator to avoid loading all the images at once
 train_generator = generator(width,height,img_train,y_train,80)
 validation_generator = generator(width,height,img_valid,y_valid,20)
+
+# fit
 history = model.fit_generator(train_generator, samples_per_epoch=36000, nb_epoch=totalEpoch,
                               callbacks=[early_stop,check_callback], initial_epoch=initialEpoch,
                               validation_data=validation_generator, nb_val_samples=8000)

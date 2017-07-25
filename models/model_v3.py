@@ -98,12 +98,6 @@ else:
     model = createModel(height, width)
 
 
-np.random.seed(123)
-if os.path.exists(output+'.h5'):
-    model = load_model(output+'.h5')
-else:
-    model = createModel(height, width)
-
 # print model information
 model.summary()
 
