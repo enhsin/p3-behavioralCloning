@@ -55,7 +55,7 @@ I first tried training the central camera data from the sample data. There are 8
 
 <table>
   <tr>
-    <td><br>version 1</br><br>training loss: 0.0100</br>validation loss: 0.0094</td>
+    <td><br><a href="./models/model_v1.py">version 1</a></br><br>training loss: 0.0100</br>validation loss: 0.0094</td>
     <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=j5pJNoAC-38" target="_blank"><img src="http://img.youtube.com/vi/j5pJNoAC-38/0.jpg" alt="v1" width="240" height="160" border="10" /></a></td>
   </tr>
 </table>
@@ -70,7 +70,7 @@ The total size of the training and validation set is now 8036x2x3 = 48k. The car
 
 <table>
   <tr>
-    <td><br>version 2<br><br>correction: 0.2<br>epoch: 4<br>training loss: 0.0190<br>validation loss: 0.0151</td> 
+    <td><br><a href="./models/model_v2.py">version 2</a></br><br><br>correction: 0.2<br>epoch: 4<br>training loss: 0.0190<br>validation loss: 0.0151</td> 
   <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=tY1NqwFFQC0" target="_blank"><img src="http://img.youtube.com/vi/tY1NqwFFQC0/0.jpg" alt="v2_c0.20_3" width="240" height="160" border="10" /></a></td>
 </tr>
 </table>
@@ -79,7 +79,7 @@ Note that the loss function is larger now because I purposely let the car not st
 
 <table>
   <tr>
-    <td><br>version 2<br><br>correction: 0.15<br>epoch: 8<br>training loss: 0.0137<br>validation loss: 0.0127</td>    
+    <td><br><a href="./models/model_v2.py">version 2</a></br><br>correction: 0.15<br>epoch: 8<br>training loss: 0.0137<br>validation loss: 0.0127</td>    
     <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=7eGYfVB5oB8" target="_blank"><img src="http://img.youtube.com/vi/7eGYfVB5oB8/0.jpg" alt="v2_c0.15_7" width="240" height="160" border="10" /></a></td>
   </tr>
 </table>
@@ -88,15 +88,21 @@ Finally, I collected two laps of Track 1 [data](http://web.ics.purdue.edu/~epeng
 
 <table>
   <tr>
-    <td><br>version 3<br><br>correction: 0.15<br>epoch: 8<br>training loss: 0.0354<br>validation loss: 0.0282</td>    
+    <td><br><a href="./models/model_v3.py">version 3</a></br><br><br>correction: 0.15<br>epoch: 8<br>training loss: 0.0354<br>validation loss: 0.0282</td>    
     <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=in-UAMa_PQQ" target="_blank"><img src="http://img.youtube.com/vi/in-UAMa_PQQ/0.jpg" alt="v3_c0.15_7" width="240" height="160" border="10" /></a></td>
 </tr>
 </table>
 It successfully drived abound Track 1!
 
 
-
-
+I later realized that I shouldn’t include left and right images in the validation set because I want the car to stay in the center of the road as much as possible. They are included in the training set to generalize the model better. 
+<table>
+  <tr>
+    <td><br><a href="./models/model_v4.py">version 4</a></br><br>correction: 0.15<br>epoch: 4<br>training loss: 0.0366<br>validation loss: 0.0324</td>    
+    <td><a href="http://www.youtube.com/watch?feature=player_embedded&v=ZFdkIKVWhhE" target="_blank"><img src="http://img.youtube.com/vi/ZFdkIKVWhhE/0.jpg" alt="v4_c0.15_3" width="240" height="160" border="10" /></a></td>
+</tr>
+</table>
+The car has much less meandering behavior and it stays on the track!
 
 
 
