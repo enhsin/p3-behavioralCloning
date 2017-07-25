@@ -25,11 +25,6 @@ def splitData(seed, validation_split=0.2, folders=['data'], augment=False, corre
                 if np.random.uniform() < validation_split:
                     img_valid.append(folder+'/'+row[0])
                     y_valid.append(float(row[3]))
-                    if augment:
-                        img_valid.append(folder+'/'+row[1].strip())
-                        y_valid.append(float(row[3])+correction)
-                        img_valid.append(folder+'/'+row[2].strip())
-                        y_valid.append(float(row[3])-correction)
                 else:
                     img_train.append(folder+'/'+row[0])
                     y_train.append(float(row[3]))
@@ -78,12 +73,14 @@ def createModel(input_l1,input_l2):
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
 
-correction = float(sys.argv[1])
-img_train, y_train, img_valid, y_valid = splitData(3, augment=True, correction=correction, folders=['data','test2'])
+correction = 0.15
+if len(sys.argv) > 1:
+    correction = float(sys.argv[1])
+img_train, y_train, img_valid, y_valid = splitData(3, validation_split=0.4, augment=True, correction=correction, folders=['data','test2'])
 tmp_img = imread(img_train[0]).astype(np.float32)
 width = tmp_img.shape[1]
 height = tmp_img.shape[0]
-output = 'model_v3_c%.2f' % (correction)
+output = 'model_v4_c%.2f' % (correction)
 
 if len(sys.argv) > 2:
     initialEpoch = int(float(sys.argv[2]))
@@ -92,7 +89,7 @@ if len(sys.argv) > 2:
     model = load_model(sys.argv[3])
     model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
 else:
-    initialEpoch = 1
+    initialEpoch = 0
     totalEpoch = 10
     np.random.seed(123)
     model = createModel(height, width)
@@ -111,7 +108,7 @@ early_stop = EarlyStopping(monitor='val_loss', min_delta=0.0002, patience=3, ver
 check_callback = ModelCheckpoint(output+'_{epoch:03d}.h5', monitor='val_loss', save_best_only=True)
 train_generator = generator(width,height,img_train,y_train,80)
 validation_generator = generator(width,height,img_valid,y_valid,20)
-history = model.fit_generator(train_generator, samples_per_epoch=48000, nb_epoch=totalEpoch,
+history = model.fit_generator(train_generator, samples_per_epoch=36000, nb_epoch=totalEpoch,
                               callbacks=[early_stop,check_callback], initial_epoch=initialEpoch,
-                              validation_data=validation_generator, nb_val_samples=12000)
+                              validation_data=validation_generator, nb_val_samples=8000)
 model.save(output+'.h5')
